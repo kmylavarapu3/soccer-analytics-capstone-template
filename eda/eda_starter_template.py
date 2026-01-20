@@ -1,6 +1,7 @@
 """
 Soccer Analytics EDA Template
-Comprehensive exploratory data analysis for Polymarket and Statsbomb data
+Soccer Analytics EDA Template
+Comprehensive exploratory data analysis for Polymarket (optional) and Statsbomb data
 Using Polars for high-performance data processing
 """
 
@@ -490,23 +491,35 @@ def main():
     print("  Using Polars for high-performance data processing")
     print("=" * 80)
     
-    # Polymarket analysis
-    analyze_polymarket_markets()
-    analyze_polymarket_tokens()
-    analyze_polymarket_trades()
-    analyze_polymarket_odds_history()
-    analyze_polymarket_event_stats()
-    analyze_polymarket_summary()
+    # Polymarket analysis (Optional)
+    if POLYMARKET_DIR.exists():
+        try:
+            analyze_polymarket_markets()
+            analyze_polymarket_tokens()
+            analyze_polymarket_trades()
+            analyze_polymarket_odds_history()
+            analyze_polymarket_event_stats()
+            analyze_polymarket_summary()
+        except Exception as e:
+            print(f"\n[SKIP] Error analyzing Polymarket data: {e}")
+    else:
+        print("\n[SKIP] Polymarket data directory not found. Skipping Polymarket analysis.")
     
     # Statsbomb analysis
-    analyze_statsbomb_matches()
-    analyze_statsbomb_events()
-    analyze_statsbomb_lineups()
-    analyze_statsbomb_three_sixty()
-    analyze_statsbomb_reference()
+    if STATSBOMB_DIR.exists():
+        analyze_statsbomb_matches()
+        analyze_statsbomb_events()
+        analyze_statsbomb_lineups()
+        analyze_statsbomb_three_sixty()
+        analyze_statsbomb_reference()
+    else:
+        print("\n[ERROR] Statsbomb data directory not found. Please run data/download_data.py first.")
     
     # Cross-dataset analysis
-    cross_dataset_analysis()
+    if POLYMARKET_DIR.exists() and STATSBOMB_DIR.exists():
+        cross_dataset_analysis()
+    else:
+        print("\n[SKIP] Skipping cross-dataset analysis (requires both Polymarket and Statsbomb data).")
     
     print("\n" + "=" * 80)
     print("  EDA COMPLETE")

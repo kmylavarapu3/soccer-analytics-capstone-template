@@ -6,10 +6,19 @@
 Build an **MIT-licensed, open-source** pipeline that ingests **public match event data** and produces **interactive player/team analytics dashboards** (e.g., possession chains, xG flow, pressure heatmaps).
 
 ## Core Scope
-* **Ingest + version** StatsBomb Open + **Polymarket** prediction data; **normalize IDs** (team/player/competition); create train/val/test splits.
-* **Polymarket Integration**: Analyze market efficiency by correlating match events (xG, momentum) with historical odds and trade volume. 
-    > [!NOTE]
-    > **Note on Live Data**: We do not provide live price feeds. All Polymarket data is provided as historical Parquet exports for backtesting and analysis.
+* **Data Processing**: Ingest and version **StatsBomb Open** match event data; **normalize IDs** (team/player/competition); create train/val/test splits.
+* **Feature Engineering**: Segment events into **possessions/chains**; derive features like carries, progressive passes, zones of control.
+* **Identity Resolution**: Resolve identities across providers (e.g., Transfermarkt/FIFA IDs; handle transfers/loans).
+* **Metrics & Analytics**: Compute + store metrics (xG, xThreat, field tilt, packing, PPDA) in DuckDB/Postgres (+ PostGIS optional).
+* **Evaluation**: Evaluate vs published benchmarks (e.g., Opta/Understat) and report deviations.
+* **Visualization**: Visualize/serve via a **static React + Leaflet** site loading precomputed bundles (filters by match/player/phase/minute range).
+* **Performance**: Profile performance (runtime/memory/disk) and document tuning for commodity laptops.
+
+## Market Analysis Integration (Optional)
+Analyze market efficiency by correlating match events (xG, momentum) with historical odds and trade volume using **Polymarket** data.
+
+> [!NOTE]
+> **Note on Live Data**: We do not provide live price feeds. All Polymarket data is provided as historical Parquet exports for backtesting and analysis.
 
 ### Polymarket Data Available
 The following data is available in `data/Polymarket/` for analysis:
@@ -19,12 +28,6 @@ The following data is available in `data/Polymarket/` for analysis:
 * `soccer_odds_history.parquet`: Time-series odds (price history) reconstructed from order books.
 * `soccer_event_stats.parquet`: Aggregated volume and market count per event.
 * `soccer_summary.parquet`: High-level market summaries (trade counts, first/last trade).
-* **Segment** events into **possessions/chains**; derive features like carries, progressive passes, zones of control.
-* **Identity resolution** across providers (e.g., Transfermarkt/FIFA IDs; handle transfers/loans).
-* **Compute + store metrics** (xG, xThreat, field tilt, packing, PPDA) in DuckDB/Postgres (+ PostGIS optional).
-* **Evaluate** vs published benchmarks (e.g., Opta/Understat) and report deviations.
-* **Visualize/serve** via a **static React + Leaflet** site loading precomputed bundles (filters by match/player/phase/minute range).
-* **Profile performance** (runtime/memory/disk) and document tuning for commodity laptops.
 
 ## Stretch Goals (Optional)
 * Nightly incremental updater
@@ -38,6 +41,38 @@ The following data is available in `data/Polymarket/` for analysis:
 * **Static dashboard** (local render + redeploy on updates) and a **dynamic/on-demand** dashboard for latest/user-specified matches.
 * Strong **docs** (README, setup, usage) + **educational notebooks**.
 * Optional **public-facing clips/shorts** demonstrating insights.
+
+## Getting Started
+1. **Fork this repository** to your own GitHub account.
+2. **Clone your fork** locally.
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. **Download the data**:
+   ```bash
+   python data/download_data.py
+   ```
+   *Note: This will download both StatsBomb (required) and Polymarket (optional) data.*
+5. **Explore the data**:
+   Run the EDA template to verify your setup:
+   ```bash
+   python eda/eda_starter_template.py
+   ```
+
+6. **Launch the dashboard**:
+   Start the interactive dashboard:
+   ```bash
+   python template/dashboard_template.py
+   ```
+   Then open `http://127.0.0.1:8050` in your browser.
+
+   The dashboard features:
+   - Dynamic filtering by competition, season, and team
+   - Real-time statistics updates
+   - Modern dark theme with responsive design
+   - Interactive visualizations with searchable filters
+   - See `template/dashboard_template.md` for detailed documentation
 
 ## Ways of Working / Expectations
 * Remote practicum; comms via **Discord**; mentorship and tutorials provided; scope is modular and may evolve.

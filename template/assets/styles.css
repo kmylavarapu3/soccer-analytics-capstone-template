@@ -1,0 +1,228 @@
+/* Custom Styles for Soccer Analytics Dashboard */
+
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+/* CSS Variables for Theme */
+:root {
+    --bg-primary: #1A1B3A; /* Dark Indigo - main background */
+    --bg-card: #25264A; /* Slightly lighter indigo for cards */
+    --bg-card-hover: #2E2F5A; /* Hover state for cards */
+    --border-color: #3A3B5C; /* Subtle border color */
+    --text-primary: #FFFFFF; /* Pure White - primary text */
+    --text-muted: #BFC0C5; /* Cool Silver - secondary text */
+    --accent-blue: #F49D52; /* Tangerine Orange - primary action */
+    --accent-secondary: #759ACE; /* Soft Cornflower - secondary action */
+    --accent-success: #10b981;
+    --accent-warning: #f59e0b;
+    --accent-danger: #ef4444;
+    --grid-color: #3A3B5C; /* Grid lines matching border */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+    --transition: all 0.2s ease;
+}
+
+/* Typography */
+body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--text-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+}
+
+.stats-number {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-weight: 700;
+}
+
+/* Custom Dropdown Styling */
+.custom-dropdown .Select-control {
+    background-color: var(--bg-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    color: var(--text-primary) !important;
+    transition: var(--transition) !important;
+}
+
+.custom-dropdown .Select-control:hover {
+    border-color: var(--accent-blue) !important;
+    box-shadow: 0 0 0 3px rgba(244, 157, 82, 0.1) !important;
+}
+
+.custom-dropdown .Select-menu-outer {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+
+.custom-dropdown .Select-option {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    transition: var(--transition) !important;
+}
+
+.custom-dropdown .Select-option:hover,
+.custom-dropdown .Select-option.is-focused {
+    background-color: var(--bg-card-hover) !important;
+    color: var(--accent-blue) !important;
+}
+
+.custom-dropdown .Select-option.is-selected {
+    background-color: var(--accent-blue) !important;
+    color: var(--text-primary) !important;
+}
+
+.custom-dropdown.is-open .Select-control {
+    border-color: var(--accent-blue) !important;
+}
+
+.custom-dropdown .Select-placeholder,
+.custom-dropdown .Select-value-label,
+.custom-dropdown .Select-input {
+    color: var(--text-primary) !important;
+}
+
+/* Search Input Styling */
+.custom-dropdown .Select-input > input {
+    color: var(--text-primary) !important;
+    background-color: transparent !important;
+    font-family: 'DM Sans', sans-serif !important;
+}
+
+.custom-dropdown .Select-input > input::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.7 !important;
+}
+
+.custom-dropdown .Select-input > input:focus {
+    outline: none !important;
+    color: var(--text-primary) !important;
+}
+
+/* Search Icon Styling */
+.custom-dropdown .Select-search-prompt {
+    color: var(--text-muted) !important;
+}
+
+.custom-dropdown .Select-arrow {
+    border-color: var(--text-muted) transparent transparent !important;
+}
+
+.custom-dropdown.is-open .Select-arrow {
+    border-color: transparent transparent var(--text-muted) !important;
+}
+
+/* Highlight matching text in dropdown options */
+.custom-dropdown .Select-option .Select-option-label {
+    color: var(--text-primary) !important;
+}
+
+.custom-dropdown .Select-option.is-focused .Select-option-label {
+    color: var(--accent-blue) !important;
+}
+
+/* Card Hover Effects */
+.dashboard-card {
+    transition: var(--transition);
+    border: 1px solid var(--border-color);
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent-blue);
+    background-color: var(--bg-card-hover);
+}
+
+/* Stats Card Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stats-card {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.stats-card:nth-child(1) { animation-delay: 0.1s; }
+.stats-card:nth-child(2) { animation-delay: 0.2s; }
+.stats-card:nth-child(3) { animation-delay: 0.3s; }
+.stats-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Loading Spinner Styles */
+.dash-loading {
+    color: var(--accent-blue);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .chart-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    .filter-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .dashboard-header {
+        padding: 20px !important;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 28px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Smooth Scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Focus States for Accessibility */
+*:focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-blue);
+}

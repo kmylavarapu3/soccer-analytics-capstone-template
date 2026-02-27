@@ -51,6 +51,27 @@ matches_with_goals = matches_df.with_columns(
     (pl.col("home_score") + pl.col("away_score")).alias("total_goals")
 )
 
+# Top players by xG
+top_players_xg = (
+    shots_df.filter(pl.col("player").is_not_null())
+    .group_by("player")
+    .agg([
+        pl.col("shot_statsbomb_xg").sum().alias("total_xg"),
+        pl.len().alias("shots"),
+    ])
+    .sort("total_xg", descending=True)
+    .head(10)
+)
+
+# Top players by events
+top_players_events = (
+    events_df.filter(pl.col("player").is_not_null())
+    .group_by("player")
+    .agg(pl.len().alias("event_count"))
+    .sort("event_count", descending=True)
+    .head(10)
+)
+
 # Get unique teams for filter
 all_teams = sorted(
     set(
@@ -572,6 +593,98 @@ app.layout = html.Div(
                         ),
                     ],
                 ),
+                # Third Row - Player Analytics
+                html.Div(
+                    style={
+                        "display": "grid",
+                        "gridTemplateColumns": "repeat(auto-fit, minmax(500px, 1fr))",
+                        "gap": THEME["spacing"]["xl"],
+                        "marginBottom": THEME["spacing"]["xl"],
+                    },
+                    className="chart-grid",
+                    children=[
+                        # Top Players by xG
+                        html.Div(
+                            style={
+                                **CARD_STYLE,
+                                "height": "500px",
+                            },
+                            className="dashboard-card",
+                            children=[
+                                html.H3("Top Players by Expected Goals (xG)", style=HEADER_STYLE),
+                                dcc.Loading(
+                                    type="default",
+                                    color=THEME["colors"]["accent"],
+                                    children=[
+                                        dcc.Graph(
+                                            figure=px.bar(
+                                                top_players_xg.to_pandas(),
+                                                x="total_xg",
+                                                y="player",
+                                                orientation="h",
+                                                labels={
+                                                    "total_xg": "Total xG",
+                                                    "player": "Player",
+                                                },
+                                                color="total_xg",
+                                                color_continuous_scale="Oranges",
+                                                height=400,
+                                            )
+                                            .update_layout(
+                                                template=plotly_template,
+                                                showlegend=False,
+                                                margin=dict(l=200, r=40, t=40, b=60),
+                                                yaxis=dict(autorange="reversed"),
+                                            ),
+                                            config={"displayModeBar": False},
+                                            style={"height": "400px"},
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                        # Top Players by Events
+                        html.Div(
+                            style={
+                                **CARD_STYLE,
+                                "height": "500px",
+                            },
+                            className="dashboard-card",
+                            children=[
+                                html.H3("Most Active Players (Total Events)", style=HEADER_STYLE),
+                                dcc.Loading(
+                                    type="default",
+                                    color=THEME["colors"]["accent"],
+                                    children=[
+                                        dcc.Graph(
+                                            figure=px.bar(
+                                                top_players_events.to_pandas(),
+                                                x="event_count",
+                                                y="player",
+                                                orientation="h",
+                                                labels={
+                                                    "event_count": "Total Events",
+                                                    "player": "Player",
+                                                },
+                                                color="event_count",
+                                                color_continuous_scale="Blues",
+                                                height=400,
+                                            )
+                                            .update_layout(
+                                                template=plotly_template,
+                                                showlegend=False,
+                                                margin=dict(l=200, r=40, t=40, b=60),
+                                                yaxis=dict(autorange="reversed"),
+                                            ),
+                                            config={"displayModeBar": False},
+                                            style={"height": "400px"},
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
                 # Footer
                 html.Div(
                     style={
@@ -584,7 +697,7 @@ app.layout = html.Div(
                     },
                     children=[
                         html.P(
-                            "© 2025 Trilemma Foundation - Soccer Analytics Capstone Template",
+                            "© 2026 Trilemma Foundation - Soccer Analytics Capstone | Georgia Tech MSA",
                             style={"margin": "0"},
                         )
                     ],

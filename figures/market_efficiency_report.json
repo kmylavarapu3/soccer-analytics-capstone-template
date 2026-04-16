@@ -1,0 +1,41 @@
+{
+  "summary": {
+    "total_matches": 2781,
+    "competitions": [
+      "African Cup of Nations",
+      "Indian Super league",
+      "UEFA Europa League",
+      "UEFA Euro",
+      "La Liga",
+      "FA Women's Super League",
+      "Copa America",
+      "Serie A",
+      "1. Bundesliga",
+      "NWSL",
+      "Women's World Cup",
+      "FIFA World Cup",
+      "FIFA U20 World Cup",
+      "UEFA Women's Euro",
+      "Premier League",
+      "Copa del Rey",
+      "Major League Soccer",
+      "Ligue 1",
+      "Champions League"
+    ]
+  },
+  "model_performance": {
+    "model_brier_home_win": 0.17516016123155595,
+    "model_brier_draw": 0.16947641814206793,
+    "model_brier_away_win": 0.1511517407893484,
+    "model_brier_overall": 0.16526277338765744
+  },
+  "value_bet_analysis": {
+    "value_bets_found": 0,
+    "pct_of_matches": 0.0,
+    "avg_divergence": 0.0
+  },
+  "xg_mismatch_analysis": {
+    "matches_with_significant_mismatch": 1986,
+    "pct_of_matches": 71.41316073354909
+  }
+}

@@ -39,91 +39,100 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
 }
 
-/* Custom Dropdown Styling */
+/* Custom Dropdown Styling — light field + dark text so selections are readable on the dark dashboard */
 .custom-dropdown .Select-control {
-    background-color: var(--bg-primary) !important;
-    border: 1px solid var(--border-color) !important;
+    background-color: #ffffff !important;
+    border: 1px solid #94a3b8 !important;
     border-radius: 8px !important;
-    color: var(--text-primary) !important;
+    color: #111111 !important;
     transition: var(--transition) !important;
 }
 
 .custom-dropdown .Select-control:hover {
     border-color: var(--accent-blue) !important;
-    box-shadow: 0 0 0 3px rgba(244, 157, 82, 0.1) !important;
+    box-shadow: 0 0 0 3px rgba(244, 157, 82, 0.15) !important;
 }
 
 .custom-dropdown .Select-menu-outer {
-    background-color: var(--bg-card) !important;
-    border: 1px solid var(--border-color) !important;
+    background-color: #ffffff !important;
+    border: 1px solid #94a3b8 !important;
     border-radius: 8px !important;
     box-shadow: var(--shadow-lg) !important;
 }
 
 .custom-dropdown .Select-option {
-    background-color: var(--bg-card) !important;
-    color: var(--text-primary) !important;
+    background-color: #ffffff !important;
+    color: #111111 !important;
     transition: var(--transition) !important;
 }
 
 .custom-dropdown .Select-option:hover,
 .custom-dropdown .Select-option.is-focused {
-    background-color: var(--bg-card-hover) !important;
-    color: var(--accent-blue) !important;
+    background-color: #f1f5f9 !important;
+    color: #111111 !important;
 }
 
 .custom-dropdown .Select-option.is-selected {
-    background-color: var(--accent-blue) !important;
-    color: var(--text-primary) !important;
+    background-color: #fff7ed !important;
+    color: #111111 !important;
+    font-weight: 600 !important;
 }
 
 .custom-dropdown.is-open .Select-control {
     border-color: var(--accent-blue) !important;
 }
 
+/* Selected value + typing — must stay dark on white */
 .custom-dropdown .Select-placeholder,
 .custom-dropdown .Select-value-label,
+.custom-dropdown .Select-single-value,
+.custom-dropdown .Select-value .Select-value-label,
+.custom-dropdown .Select-value,
 .custom-dropdown .Select-input {
-    color: var(--text-primary) !important;
+    color: #111111 !important;
+}
+
+.custom-dropdown .Select-placeholder {
+    color: #64748b !important;
 }
 
 /* Search Input Styling */
 .custom-dropdown .Select-input > input {
-    color: var(--text-primary) !important;
+    color: #111111 !important;
     background-color: transparent !important;
     font-family: 'DM Sans', sans-serif !important;
 }
 
 .custom-dropdown .Select-input > input::placeholder {
-    color: var(--text-muted) !important;
-    opacity: 0.7 !important;
+    color: #64748b !important;
+    opacity: 1 !important;
 }
 
 .custom-dropdown .Select-input > input:focus {
     outline: none !important;
-    color: var(--text-primary) !important;
+    color: #111111 !important;
 }
 
 /* Search Icon Styling */
 .custom-dropdown .Select-search-prompt {
-    color: var(--text-muted) !important;
+    color: #64748b !important;
 }
 
 .custom-dropdown .Select-arrow {
-    border-color: var(--text-muted) transparent transparent !important;
+    border-color: #475569 transparent transparent !important;
 }
 
 .custom-dropdown.is-open .Select-arrow {
-    border-color: transparent transparent var(--text-muted) !important;
+    border-color: transparent transparent #475569 !important;
 }
 
 /* Highlight matching text in dropdown options */
 .custom-dropdown .Select-option .Select-option-label {
-    color: var(--text-primary) !important;
+    color: #111111 !important;
 }
 
 .custom-dropdown .Select-option.is-focused .Select-option-label {
-    color: var(--accent-blue) !important;
+    color: #111111 !important;
 }
 
 /* Card Hover Effects */

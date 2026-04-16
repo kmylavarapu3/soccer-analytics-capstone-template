@@ -1,98 +1,174 @@
-# Soccer Analytics Capstone Template
+# Soccer Analytics Capstone — Trilemma Foundation
 
-**Project (Trilemma Foundation): “Delivering Elite European Football (Soccer) Analytics”**
+**Georgia Tech MSA Spring 2026 Practicum**  
+**Author**: Karthik Mylavarapu (kmylavarapu3)
 
 ## Project Overview
-This project aims to build an **MIT-licensed, open-source** pipeline that ingests **public match event data** and produces **interactive player/team analytics dashboards**. The goal is to create actionable insights (e.g., possession chains, xG flow, pressure heatmaps) from raw event data.
+Goal: build an open-source soccer analytics pipeline that combines StatsBomb event data and Polymarket market data to support an interactive dashboard and a systematic pre-game / halftime prediction workflow.
+
+**Track 2: Soccer Analytics Dashboard**
 
 > [!IMPORTANT]
 > **License Notice**: The code in this repository is licensed under MIT. However, the data sources (StatsBomb and Polymarket) are not covered by the MIT license and have their own licensing terms. See the [Data Licensing](#data-licensing) section below.
 
-## Project Guidelines
-This template provides a foundation, but the direction of your analysis is up to you. Below are some areas to focus on as you build your pipeline:
+## For reviewers (submission bundle)
 
-* **Data Processing**: You'll need a way to ingest and version match event data (e.g., StatsBomb). Note that **IDs are currently NOT normalized** across datasets (e.g., StatsBomb team IDs do not currently map to Polymarket market slugs). A critical early task is creating those mapping layers to join betting interest with match events.
-* **Feature Engineering**: Consider how to segment the game. breaking matches into **possessions or chains** is a common approach. Think about what derived features (carries, pressure, zones of control) might be predictive or descriptive.
-* **Identity Resolution**: Real-world data is messy. You may need to resolve player identities across different providers (e.g., mapping Transfermarkt IDs to match data) or handle player transfers and loans.
-* **Metrics & Analytics**: Explore computing standard advanced metrics like **xG, xThreat, or Field Tilt**. Storing these efficiently (e.g., in DuckDB or Postgres) will make analysis much faster.
-* **Evaluation**: How do you know your model is good? Consider comparing your meaningful metrics against published benchmarks or using them to identify outliers.
-* **Visualization**: Analytics needs to be communicated. A **static React + Leaflet** site is a great way to host interactive visualizations without heavy backend infrastructure.
-* **Performance**: Keep an eye on efficiency. Documenting the runtime and memory usage of your pipeline helps ensure it can run on standard hardware.
+- **Written report (PDF):** `Reports/Final_Report_kmylavarapu3.pdf` (duplicate build: `Reports/Final_Report_kmylavarapu3_refreshed.pdf`; editable source: `Reports/FINAL_REPORT_SOURCE.md`).
+- **Slides:** `Final_Presentation_kmylavarapu3.pptx` (light text on dark theme; run `python format_final_presentation.py` after manual edits if colors need resetting).
+- **Public / industry deliverable:** `template/dashboard.py` — six tabs including **Prediction Lab**; requires `eda/output/match_features.parquet` from `python eda/predictive_modeling.py` first.
+- **Verification:** `python -m pytest tests/` (6 tests).
 
-## Market Analysis Integration (Optional)
-Analyze market efficiency by correlating match events (xG, momentum) with historical odds and trade volume using **Polymarket** data. 
+## Key Results
+- **Pre-match ELO baseline:** `R² = 0.242`
+- **Full-match xG baseline:** `R² = 0.477`
+- **Full-match tactical model:** `R² = 0.582`
+- **Halftime score baseline:** `R² = 0.542`
+- **Halftime live model:** `R² = 0.610`
+- **Halftime leader failure rate:** `22.4%`
+- **Balanced halftime upset tree:** `0.651` balanced accuracy, `0.902` collapse recall
+- **Market linkage:** `2,781` candidate matches, model-only Brier score `0.165`
 
-> [!TIP]
-> **Integration Task**: Since these datasets are from different providers, you'll need to manually resolve entities (e.g., mapping the StatsBomb team name `Arsenal FC` to the Polymarket slug `arsenal`).
+## Repository Structure
+```
+├── data/
+│   ├── Statsbomb/          # StatsBomb match, event, lineup data (Parquet)
+│   ├── Polymarket/         # Polymarket market, trade, odds data (Parquet)
+│   └── download_data.py    # Data download script
+├── eda/
+│   ├── EDA.ipynb                 # Technical EDA notebook
+│   ├── EDA_Executive.ipynb       # Executive summary notebook
+│   ├── eda_starter_template.py   # Starter EDA script
+│   ├── entity_resolution.py      # StatsBomb ↔ Polymarket team mapping
+│   ├── feature_engineering.py    # Advanced metrics (PPDA, xT, Field Tilt)
+│   ├── predictive_modeling.py    # Multi-feature OLS and outcome prediction
+│   ├── market_comparison.py      # xG vs Polymarket odds analysis
+│   ├── market_analysis.py        # Market efficiency and volume analysis
+│   └── render_report_pdf.py      # Render Reports/FINAL_REPORT_SOURCE.md to PDF
+├── Reports/
+│   ├── Final_Report_kmylavarapu3.pdf
+│   ├── Final_Report_kmylavarapu3_refreshed.pdf
+│   ├── FINAL_REPORT_SOURCE.md
+│   └── FINAL_REPORT_REFRESH.md
+├── template/
+│   ├── dashboard.py              # Enhanced interactive dashboard (6 tabs incl. Prediction Lab)
+│   └── dashboard_template.py     # Original template dashboard
+├── tests/
+│   ├── conftest.py
+│   └── test_timestamps.py
+├── Final_Presentation_kmylavarapu3.pptx
+├── format_final_presentation.py   # Re-apply slide colors/layout (optional, after manual PPT edits)
+├── requirements.txt
+└── README.md
+```
 
-> [!NOTE]
-> **Note on Live Data**: We do not provide live price feeds. All Polymarket data is provided as historical Parquet exports for backtesting and analysis.
+## Data Sources
+- **StatsBomb Open Data**: 3,464 matches, 12.2M events across La Liga, Premier League, Serie A, Ligue 1, Bundesliga (CC BY-NC 4.0)
+- **Polymarket**: 8,549 soccer betting markets, 1.1M trades, $3B+ total volume (Apr 2025–Jan 2026)
 
-### Polymarket Data Available
-The following data is available in `data/Polymarket/` for analysis:
-* `soccer_markets.parquet`: Core metadata for soccer markets (questions, slugs, end dates).
-* `soccer_tokens.parquet`: Mapping of markets to specific outcome tokens (e.g., "Yes", "No", team names).
-* `soccer_trades.parquet`: Granular, trade-by-trade execution data (price, size, timestamp).
-* `soccer_odds_history.parquet`: Time-series odds (price history) reconstructed from order books.
-* `soccer_event_stats.parquet`: Aggregated volume and market count per event.
-* `soccer_summary.parquet`: High-level market summaries (trade counts, first/last trade).
+## Analytics Modules
 
-> [!NOTE]
-> **Polymarket timestamps**: `soccer_trades.parquet`, `soccer_odds_history.parquet`, and the `first_trade`/`last_trade` fields in `soccer_summary.parquet` are stored as epoch milliseconds in Parquet `TIMESTAMP` columns. Read them by casting via Int64 -> Datetime(ms) at runtime. The EDA template applies this correction automatically.
+### Entity Resolution (`eda/entity_resolution.py`)
+Purpose: map StatsBomb and Polymarket team names using normalization, regex extraction, Jaccard similarity, and manual overrides.
 
-## Stretch Goals (Optional)
-* Nightly incremental updater
-* Transformer sequence classifier for press events
-* Role embeddings
-* xG calibration curves
-* CLI export of media-ready heatmaps
+### Feature Engineering (`eda/feature_engineering.py`)
+Core metrics:
+- **Possession Chains**: Segment matches into possession sequences
+- **PPDA** (Passes Per Defensive Action): Pressure intensity metric
+- **Field Tilt**: Ball position distribution analysis
+- **Expected Threat (xT)**: Progressive passing value estimation
+- **Team Style Classification**: Tactical categorization
 
-## Expected Deliverables
-* Public **MIT GitHub repo** (core “product”).
-* **Static dashboard** (local render + redeploy on updates) and a **dynamic/on-demand** dashboard for latest/user-specified matches.
-* Strong **docs** (README, setup, usage) + **educational notebooks**.
-* Optional **public-facing clips/shorts** demonstrating insights.
+### Predictive Modeling (`eda/predictive_modeling.py`)
+Model ladder:
+- **Pre-match ELO baseline**: `R² = 0.242`
+- **Baseline full-match model** (`xg_diff` only): `R² = 0.477`
+- **Full-match tactical model**: `R² = 0.582`
+- **Halftime score baseline**: `R² = 0.542`
+- **Halftime live model** (score + first-half momentum metrics): `R² = 0.610`
+- Forward feature selection with forward-chaining temporal validation
+- Halftime edge analysis for score vs xG disagreement
+- Balanced decision tree for comeback / upset-state analysis
+
+### Market Comparison (`eda/market_comparison.py`)
+Market analysis:
+- Poisson-based probability estimation from xG
+- Model vs market calibration curves
+- Value bet identification
+- Market efficiency metrics by competition and time period
+- Candidate match-to-market linkage for 2,781 matches
+
+### Interactive Dashboard (`template/dashboard.py`)
+Plotly Dash application with 6 analysis tabs:
+1. **Overview**: Competition summaries, xG distributions, top teams/players
+2. **Match Analysis**: Game-by-game breakdown with xG flow timelines and shot maps
+3. **Team Analytics**: Radar charts, performance vs xG, tactical metrics
+4. **Player Analytics**: Individual stats, efficiency, style classification
+5. **Tactical Metrics**: PPDA/Field Tilt distributions, possession chain analysis
+6. **Prediction Lab**: Model ladder comparison, halftime score/xG diagnostics, and lead-collapse analysis
 
 ## Getting Started
-1. **Fork this repository** to your own GitHub account.
-2. **Clone your fork** locally.
-3. **Install dependencies**:
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/kmylavarapu3/soccer-analytics-capstone-template.git
+   cd soccer-analytics-capstone-template
+   ```
+
+2. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
-4. **Download the data**:
+
+3. **Download the data**:
    ```bash
    python data/download_data.py
    ```
-   *Note: This will download both StatsBomb (required) and Polymarket (optional) data.*
-5. **Explore the data**:
-   Run the EDA template to verify your setup:
+
+4. **Run exploratory analysis**:
    ```bash
    python eda/eda_starter_template.py
    ```
 
-6. **Launch the dashboard**:
-   Start the interactive dashboard:
+5. **Run predictive modeling**:
    ```bash
-   python template/dashboard_template.py
+   python eda/predictive_modeling.py
    ```
-   Then open `http://127.0.0.1:8050` in your browser.
+   This generates the saved match-level feature file and figures used by the dashboard's Prediction Lab tab.
 
-   The dashboard features:
-   - Dynamic filtering by competition, season, and team
-   - Real-time statistics updates
-   - Modern dark theme with responsive design
-   - Interactive visualizations with searchable filters
-   - See `template/dashboard_template.md` for detailed documentation
+6. **Launch the interactive dashboard**:
+   ```bash
+   python template/dashboard.py
+   ```
+   Then open `http://127.0.0.1:8050` in your browser. Run `predictive_modeling.py` first so `eda/output/match_features.parquet` exists; the **Prediction Lab** tab reloads that file automatically (no need to restart the server after generating it).
 
-## Recommended Workflow
-* **Communication**: We use **Discord** for day-to-day chat. Feel free to ask questions and share updates there.
-* **Progress**: Regular, visible progress (e.g., weekly commits) is the best way to get feedback. We value initiative and the ability to adapt as you learn more about the data.
-* **Open Source**: We encourage keeping your code open (MIT License), while respecting the specific licensing terms of the data providers.
+7. **Analyze market efficiency**:
+   ```bash
+   python eda/market_comparison.py
+   ```
 
+## Requirements
+- Python 3.9+
+- Core dependencies: `polars`, `pandas`, `numpy`
+- Visualization: `matplotlib`, `seaborn`, `plotly`, `dash`
+- Data handling: `pyarrow`, `psutil`
+- See `requirements.txt` for complete dependency list
 
-## Data Access
-All data for this project can be accessed through this [Google Drive link](https://drive.google.com/drive/folders/1xfY6aRZuB5jbAQ1dcmM7aRLBcQHdBEO0?usp=sharing).
+## Project Deliverables
+- **MIT-licensed GitHub repository** with complete source code
+- **Interactive dashboard** with 6 analytical tabs and dynamic filtering
+- **Dashboard as the public-facing deliverable**, separate from the formal program report
+- **Executive summary notebook** (EDA_Executive.ipynb) for stakeholder communication
+- **Technical EDA notebook** (EDA.ipynb) with detailed exploratory analysis
+- **Final Report** (PDF) in `Reports/`
+- **Refreshed final report PDF** (`Reports/Final_Report_kmylavarapu3_refreshed.pdf`) generated from the editable markdown source
+- **Final report source** (`Reports/FINAL_REPORT_SOURCE.md`) for editable, source-backed narrative updates
+- **Final Presentation** (PPTX) updated to reflect validated model results
+
+## Key Findings
+- xG differential is the strongest single full-match feature
+- ELO works as a clean pre-match baseline
+- First-half state becomes more informative than pre-match strength once the match begins
+- Halftime score and halftime xG disagreement is a useful upset signal
+- Polymarket comparison is feasible, but liquid markets remain difficult to beat consistently
 
 ## Data Licensing
 This project uses data from multiple sources, each with their own licensing terms:

@@ -2,9 +2,6 @@
 
 This document details the schemas for the 6 Parquet files exported from the Polymarket DuckDB. All files are located in `soccer_project_polymarket/parquet_export/`.
 
-> [!IMPORTANT]
-> **Timestamp caveat (Polymarket)**: Several timestamp fields are stored as Parquet `TIMESTAMP` but contain **epoch milliseconds** that were written as if they were **nanoseconds**. When read normally, they appear in 1970. Treat these fields as epoch **ms** at runtime (see notes below).
-
 ---
 
 ## 1. `soccer_markets.parquet`
@@ -44,7 +41,7 @@ Granular trade-by-trade data for soccer markets.
 | `trade_id` | VARCHAR | Unique ID for the trade. |
 | `market_id` | VARCHAR | Links to `soccer_markets.parquet`. |
 | `token_id` | VARCHAR | Links to `soccer_tokens.parquet`. |
-| `timestamp` | TIMESTAMP | When the trade occurred. **Caveat**: stored as epoch ms in a TIMESTAMP field; cast via Int64 -> Datetime(ms) at runtime. |
+| `timestamp` | TIMESTAMP | When the trade occurred. |
 | `price` | DOUBLE | Execution price (0.0 to 1.0). |
 | `size` | DOUBLE | Amount of tokens traded. |
 | `side` | VARCHAR | Trade side ("BUY" or "SELL"). |
@@ -60,7 +57,7 @@ Time-series odds (price history) reconstructed from order book/odds data.
 | :--- | :--- | :--- |
 | `market_id` | VARCHAR | Links to `soccer_markets.parquet`. |
 | `token_id` | VARCHAR | Links to `soccer_tokens.parquet`. |
-| `timestamp` | TIMESTAMP | Time of the odds snapshot. **Caveat**: stored as epoch ms in a TIMESTAMP field; cast via Int64 -> Datetime(ms) at runtime. |
+| `timestamp` | TIMESTAMP | Time of the odds snapshot. |
 | `price` | DOUBLE | Price at the given timestamp (0.0 to 1.0). |
 
 ---
@@ -90,8 +87,8 @@ High-level summary per market, useful for indexing and quick lookups.
 | `active` | BOOLEAN | Active status. |
 | `token_count` | BIGINT | Number of tokens (outcomes) for this market. |
 | `trade_count` | BIGINT | Total number of trades recorded. |
-| `first_trade` | TIMESTAMP | Timestamp of the first trade. **Caveat**: stored as epoch ms in a TIMESTAMP field; cast via Int64 -> Datetime(ms) at runtime. |
-| `last_trade` | TIMESTAMP | Timestamp of the most recent trade. **Caveat**: stored as epoch ms in a TIMESTAMP field; cast via Int64 -> Datetime(ms) at runtime. |
+| `first_trade` | TIMESTAMP | Timestamp of the first trade. |
+| `last_trade` | TIMESTAMP | Timestamp of the most recent trade. |
 
 ---
 

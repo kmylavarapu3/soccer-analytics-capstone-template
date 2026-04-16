@@ -1,0 +1,16 @@
+|--- abs_halftime_lead <= 1.50
+|   |--- halftime_pressure_events_diff <= -59.50
+|   |   |--- class: 0
+|   |--- halftime_pressure_events_diff >  -59.50
+|   |   |--- halftime_pass_completion_diff <= 0.20
+|   |   |   |--- class: 1
+|   |   |--- halftime_pass_completion_diff >  0.20
+|   |   |   |--- class: 1
+|--- abs_halftime_lead >  1.50
+|   |--- halftime_pass_volume_diff <= 153.00
+|   |   |--- abs_halftime_lead <= 2.50
+|   |   |   |--- class: 0
+|   |   |--- abs_halftime_lead >  2.50
+|   |   |   |--- class: 0
+|   |--- halftime_pass_volume_diff >  153.00
+|   |   |--- class: 0

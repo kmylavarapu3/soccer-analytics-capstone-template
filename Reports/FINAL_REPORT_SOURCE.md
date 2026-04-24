@@ -8,6 +8,14 @@
 
 ---
 
+## Executive Summary
+
+This project builds a reproducible soccer analytics system for exploring elite European football matches and estimating match outcomes as games evolve. The work uses public StatsBomb event data as the primary technical foundation and adds Polymarket market data as an optional comparison layer for market-efficiency analysis.
+
+The final deliverable is both analytical and practical: a written report, reusable Python modules, generated figures, and an interactive dashboard with a dedicated Prediction Lab. The central finding is that match state at halftime carries substantial predictive signal. A pre-match ELO baseline explains a meaningful but limited share of goal-differential variation (R^2 = 0.242), while a halftime live model using score, xG, and tactical context performs best in the reporting run (R^2 = 0.610). Halftime leaders still fail to win 22.4% of the time, and score-based leaders disagree with xG-based leaders in 11.3% of matches, creating a useful diagnostic for unstable leads and potential comeback risk.
+
+The main recommendation is to treat soccer matches as evolving processes rather than static final-score records. For analysts, this means combining scoreboard state with xG and tactical features before making tactical, betting-market, or fan-facing interpretations. For future work, the most valuable next step is stronger identity resolution between match-event data and market data so that model probabilities can be compared against market odds with higher confidence.
+
 ## Project Overview
 
 **Goal:** Build an open-source soccer analytics pipeline that ingests public match event data, supports interactive player and team dashboards, and adds a systematic match-outcome prediction workflow (pre-game through halftime).
@@ -22,6 +30,10 @@
 **Key challenge:** Team identifiers are not normalized across datasets — StatsBomb team IDs do not map to Polymarket market slugs. Entity resolution is a critical early task, and match–market linkage remains heuristic.
 
 **Track selected:** Track 2 — Soccer Analytics Dashboard (extended with prediction and market comparison modules).
+
+**Audience:** The report is written for an analytics professional who understands modeling and data products but may not already know the soccer analytics context. Soccer-specific metrics are introduced at a high level where they materially affect interpretation.
+
+**Scope note:** No non-disclosure restrictions apply to the public data used here. The code is MIT-licensed, while the underlying StatsBomb and Polymarket data remain governed by their own licensing and terms.
 
 ---
 
@@ -140,7 +152,13 @@ The tree is intentionally not a pure accuracy play; it is a diagnostic for unsta
 
 ---
 
-## Plan: Remaining Work and Future Extensions
+## Recommendations and Future Extensions
+
+**Recommendations**
+
+- Use xG as the default explanatory anchor for match performance, but avoid treating it as sufficient on its own. Tactical metrics such as field tilt, pressure, carries, and pass completion add measurable context.
+- For live or halftime analysis, report both scoreboard state and xG state. Disagreement between the two is one of the clearest indicators that a lead may be unstable.
+- Treat market-comparison results as exploratory until team and match identity resolution is made more exact. Current linkage is useful for coverage and calibration diagnostics, not for definitive market-beating claims.
 
 **Near-term analytics**
 
